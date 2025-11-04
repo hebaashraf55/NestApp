@@ -1,47 +1,7 @@
 import z from 'zod';
 import { GenderEnum, RoleEnum, ProviderEnum } from 'src/common/enums/user.enum';
 
-// export class SignUpDTO {
-//   @IsString({ message: 'FirstName must be a string' })
-//   @Length(2, 20, { message: 'FirstName must be between 2 and 20 characters' })
-//   @IsNotEmpty({ message: 'FirstName is required' })
-//   firstName: string;
-
-//   @IsString({ message: 'LastName must be a string' })
-//   @Length(2, 20, { message: 'LastName must be between 2 and 20 characters' })
-//   @IsNotEmpty({ message: 'LastName is required' })
-//   lastName: string;
-
-//   @IsString({ message: 'UserName must be a string' })
-//   @Length(2, 40, { message: 'UserName must be between 2 and 40 characters' })
-//   userName: string;
-
-//   @IsEmail({}, { message: 'Email is not valid' })
-//   email: string;
-
-//   @IsStrongPassword()
-//   password: string;
-
-//   @IsEnum(GenderEnum, { message: 'Gender must be either MALE or FEMALE' })
-//   gender: string;
-
-//   @IsEnum(RoleEnum, { message: 'Role must be either ADMIN or USER' })
-//   role: string;
-
-//   @IsPhoneNumber('EG', { message: 'Invalid Egyption Phone number' })
-//   phone: string;
-
-//   // @IsDate({ message: 'DOB must be a valid date' })
-//   // DOB: Date;
-
-//   @IsInt({ message: 'Age must be an integer' })
-//   @Min(18, { message: 'Age must be at least 18' })
-//   @Max(60, { message: 'Age must be at most 100' })
-//   age: number;
-// }
-
-// zod
-
+// sign up
 export const signUpSchema = z
   .strictObject({
     firstName: z.string().min(2).max(20).optional(),
@@ -72,5 +32,23 @@ export const signUpSchema = z
     message: 'Password and ConfirmPassword does not Match',
     path: ['confirmPassword'],
   });
-
 export type SignUpDTO = z.infer<typeof signUpSchema>;
+
+// resend otp
+export const resendOtpSchema = z.strictObject({
+  email: z.string().email(),
+});
+export type ResendDTO = z.infer<typeof resendOtpSchema>;
+
+// confirm email
+export const confirmEmailSchema = z.strictObject({
+  email: z.string().email(),
+  otp: z.string().regex(/^\d{6}$/),
+});
+export type ConfirmEmailDTO = z.infer<typeof confirmEmailSchema>;
+
+export const logInSchema = z.strictObject({
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+export type LogInDTO = z.infer<typeof logInSchema>;

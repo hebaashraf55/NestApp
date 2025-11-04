@@ -10,3 +10,7 @@ export enum RoleEnum {
   ADMIN = 'ADMIN',
   USER = 'USER',
 }
+export enum OtpTypeEnum {
+  confirmEmail = 'CONFIRM EMAIL',
+  resetPassword = 'RESET PASSWORD',
+}

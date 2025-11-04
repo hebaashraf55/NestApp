@@ -8,6 +8,7 @@ import {
 import { HydratedDocument } from 'mongoose';
 import { GenderEnum, ProviderEnum } from 'src/common/enums/user.enum';
 import { hash } from 'src/common/utils/security/hash.utils';
+import { OtpDocument } from './otp.model';
 
 @Schema({
   timestamps: true,
@@ -35,6 +36,7 @@ export class User {
 
   @Virtual({
     get: function () {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       return this.firstName + ' ' + this.lastName;
     },
     set: function (value) {
@@ -60,12 +62,8 @@ export class User {
 
   @Prop({
     type: String,
-  })
-  confirmEmailOTP: string;
-
-  @Prop({
-    type: String,
     required: function () {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       return this.provider !== ProviderEnum.GOOGLE ? false : true;
     },
   })
@@ -95,6 +93,9 @@ export class User {
     type: String,
   })
   phone: string;
+
+  @Virtual()
+  otp: OtpDocument[];
 }
 
 export const userSchema = SchemaFactory.createForClass(User);
@@ -104,6 +105,12 @@ userSchema.pre('save', async function (next) {
     this.password = await hash({ plainText: this.password });
   }
   next();
+});
+
+userSchema.virtual('otp', {
+  ref: 'Otp',
+  localField: '_id',
+  foreignField: 'createdBy',
 });
 
 export type UserDocument = HydratedDocument<User>;
