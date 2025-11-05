@@ -1,10 +1,13 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
   Patch,
   Post,
   Req,
+  UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
   UsePipes,
@@ -22,7 +25,8 @@ import {
 } from './dto/signup.dto';
 import { ZodValidationPipe } from '../common/pipes/zod.pipe';
 import { AuthGuard } from 'src/common/guards/auth.guard';
-import { LoggingInterceptor } from 'src/common/interceptors/loggers.interceptor';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { uploadFileOption, uploadFilesOption } from 'src/common/utils/multer/multer.utils';
 
 
 // @UseInterceptors(LoggingInterceptor)
@@ -58,5 +62,21 @@ export class AuthController {
   @Get('/profile')
   profile(@Req() req: any) {
     return this.authService.getProfile(req);
+  }
+
+  @Post('/upload-file')
+  @UseInterceptors(FileInterceptor('image', uploadFileOption))
+  upload(@UploadedFile() file: Express.Multer.File) {
+    console.log(file);
+    
+    //return this.authService.uploadFile(req);
+  }
+
+  @Post('/upload-files')
+  @UseInterceptors(FilesInterceptor('files', 5 ,uploadFilesOption))
+  uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
+    console.log(files);
+    
+    //return this.authService.uploadFile(req);
   }
 }
