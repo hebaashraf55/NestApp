@@ -6,6 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 import { resolve } from 'node:path';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PreAuthMiddleware } from './common/middleware/preAuth.middleware';
+import { BrandModule } from './brand/brand.module';
+import { CategoryModule } from './category/category.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { PreAuthMiddleware } from './common/middleware/preAuth.middleware';
         );
       },
     }),
+    BrandModule,
+    CategoryModule,
   ],
   controllers: [AppController],
   providers: [AppService],

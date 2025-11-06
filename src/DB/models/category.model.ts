@@ -1,13 +1,11 @@
-/* eslint-disable @typescript-eslint/await-thenable */
 import { Prop, Schema, SchemaFactory, MongooseModule } from '@nestjs/mongoose';
-import { IsString } from 'class-validator';
 import mongoose, { HydratedDocument, Types } from 'mongoose';
 import slugify from 'slugify';
 
 @Schema({
   timestamps: true,
 })
-export class Brand {
+export class Category {
 
  @Prop({
     type: String,
@@ -18,6 +16,14 @@ export class Brand {
     })
     name:string;
 
+
+ @Prop({
+    type: String,
+    minLength: 3,
+    maxLength: 1000,
+    })
+    description ?: string
+
  @Prop({
     type: String,
     minLength: 3,
@@ -26,22 +32,26 @@ export class Brand {
     slug:string;
 
  @Prop({
-      type: String,
-      required: true,
-    })
-    image: string;
-
- @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
     })
   createdBy: Types.ObjectId;
 
+ @Prop({
+      type: String,
+      required: true,
+    })
+    image: string;
+
+ @Prop({
+      type: [{ type : mongoose.Schema.Types.ObjectId, ref: "Brand" }],
+    })
+    brands: Types.ObjectId[];
 }
 
-export const brandSchema = SchemaFactory.createForClass(Brand);
-brandSchema.pre(
+export const categorySchema = SchemaFactory.createForClass(Category);
+categorySchema.pre(
   'save',
   async function (next) {
 
@@ -51,10 +61,7 @@ brandSchema.pre(
     next();
   },
 );
-
-
-export type BrandDocument = HydratedDocument<Brand>;
-
-export const BrandModel = MongooseModule.forFeature([
-  { name: Brand.name, schema: brandSchema },
+export type CategoryDocument = HydratedDocument<Category>;
+export const CategoryModel = MongooseModule.forFeature([
+  { name: Category.name, schema: categorySchema },
 ]);
