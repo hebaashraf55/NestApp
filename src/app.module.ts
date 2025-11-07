@@ -8,6 +8,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PreAuthMiddleware } from './common/middleware/preAuth.middleware';
 import { BrandModule } from './brand/brand.module';
 import { CategoryModule } from './category/category.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CategoryModule } from './category/category.module';
     }),
     BrandModule,
     CategoryModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],
