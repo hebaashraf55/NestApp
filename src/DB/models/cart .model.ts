@@ -45,23 +45,23 @@ export class Cart {
     })
     subTotal : number;
 
-    // @Prop({
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Coupon',
-    // })
-    // coupon ?: Types.ObjectId | null;
+    @Prop({
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Coupon',
+    })
+    coupon ?: Types.ObjectId | null;
     
-    // @Prop({
-    //     type: Number,
-    //     default: 0
-    // })
-    // discount ?: number | null;
+    @Prop({
+        type: Number,
+        default: 0
+    })
+    discount ?: number | null;
     
-    // @Prop({
-    //     type: Number,
-    //     default: 0
-    // })
-    // totalAfterDiscount ?: number
+    @Prop({
+        type: Number,
+        default: 0
+    })
+    totalAfterDiscount ?: number
 
 }
 

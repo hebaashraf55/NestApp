@@ -17,14 +17,15 @@ export class CartController {
     return this.cartService.addToCart(userId , body.productId, body.quantity);
   }
 
+  // @Get()
+  // findAll() {
+  //   return this.cartService.findAll();
+  // }
+  @UseGuards(AuthGuard)
   @Get()
-  findAll() {
-    return this.cartService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cartService.findOne(+id);
+  findOne(@Req() req) {
+    const userId = req.user._id;
+    return this.cartService.findOne(userId);
   }
 
   @UseGuards(AuthGuard)
@@ -37,8 +38,24 @@ export class CartController {
     return this.cartService.updateCart(userId, productId, quantity);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.cartService.remove(+id);
+  @UseGuards(AuthGuard)
+  @Delete('/:productId')
+  remove(
+    @Param('productId') productId: string, 
+    @Req() req) {
+      const userId = req.user._id
+
+    return this.cartService.remove(userId, productId);
   }
+
+  @UseGuards(AuthGuard)
+  @Post('/apply-coupon')
+  applyCoupon(
+    @Body('code') code: string, 
+    @Req() req) {
+      const userId = req.user._id
+    return this.cartService.applyCoupon(userId, code);
+  }
+
+
 }
