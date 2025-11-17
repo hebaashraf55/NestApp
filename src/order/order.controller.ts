@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Body, Patch, Param, UseGuards, Req } from '@nestjs/common';
 import { OrderService } from './order.service';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
 import { AuthGuard } from 'src/common/guards/auth.guard';
+import { Types } from 'mongoose';
+import type { UserDocument } from 'src/DB/models/user.model';
 
 @Controller('api/order')
 export class OrderController {
@@ -16,23 +16,26 @@ export class OrderController {
     return this.orderService.create(cartId, address, phone , userId);
   }
 
-  @Get()
-  findAll() {
-    return this.orderService.findAll();
+  // create session
+  
+  @Post('/checkout/:orderId')
+  @UseGuards(AuthGuard)
+  async createCheckoutSession(
+    @Param('orderId') orderId: Types.ObjectId, 
+    @Req() req, 
+  ) {
+      const userId = req.user._id;
+      const session = await this.orderService.createCheckoutSession(orderId, userId);
+   return session;
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.orderService.findOne(+id);
+  @Post('/refund/:orderId')
+  @UseGuards(AuthGuard)
+  async refundOrder(@Param('orderId') orderId : Types.ObjectId, @Req() req, ){
+    const userId = req.user._id
+    const refund = await this.orderService.refundOrder(orderId, userId);
+    return refund;
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.orderService.update(+id, updateOrderDto);
-  }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.orderService.remove(+id);
-  }
 }

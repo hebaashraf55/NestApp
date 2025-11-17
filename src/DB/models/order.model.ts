@@ -69,7 +69,7 @@ export class Order {
         values: Object.values(PaymentMethodEnum),
         message: '{VALUE} is not supported'
     },
-    default : PaymentMethodEnum.CASH_ON_DELIVERY
+    default : PaymentMethodEnum.CASH
     })
     paymentMethod: string;
 
@@ -85,6 +85,21 @@ export class Order {
     required : true,
     })
     phone: string; 
+
+ @Prop({
+   type: String,
+  })
+  intentId: string;
+
+@Prop({
+   type: String,
+  })
+  refundId: string;
+   
+@Prop({
+   type: Date,
+  })
+  refundedAt: Date;
 
 }
 

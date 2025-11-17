@@ -16,12 +16,12 @@ export enum OtpTypeEnum {
 }
 export enum OrderStatusEnum {
   "PLACED" = "placed",
-  "PROCESSING" = "processing",
+  "PROCISSING" = "procissing",
   "SHIPPED" = "shipped",
   "DELIVERED" = "delivered",
   "CANCELLED" = "cancelled",
 }
 export enum PaymentMethodEnum {
-  CASH_ON_DELIVERY = "cash_on_delivery",
-  ONLINE_PAYMENT = "online_payment",
+  CASH = "cash",
+  CARD = "card",
 }
