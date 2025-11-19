@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, UseInterceptors, UploadedFiles, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, BadRequestException, UseInterceptors, UploadedFiles, Req, UseGuards, Inject } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -7,11 +7,14 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { Types } from 'mongoose';
 import { AuthGuard } from 'src/common/guards/auth.guard';
+import type { RedisClientType } from 'redis';
 
 
 @Controller('api/product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(private readonly productService: ProductService,
+    @Inject('REDIS_CLIENT') private readonly redisClient: RedisClientType
+  ) {}
 
   @Post('/create')
   @UseInterceptors(FilesInterceptor('images', 4 ,{ 
@@ -40,23 +43,15 @@ export class ProductController {
     return this.productService.create(createProductDto, userId, files);
   }
 
-  @Get()
-  findAll() {
-    return this.productService.findAll();
+
+  @Get('test')
+  async test(){
+    let user = JSON.parse( (await this.redisClient.get('user') ) as string);
+    if(!user) {
+      user = {message : `Done at ${Date.now()}`, username: "Heba"}
+      await this.redisClient.set("user", JSON.stringify(user), { expiration : { type : 'EX', value : 5} })
+    }
+    return user;
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.update(+id, updateProductDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productService.remove(+id);
-  }
 }
